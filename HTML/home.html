@@ -15,6 +15,9 @@
     <script src="../JS/login.js" defer></script>
     <!--Font awesome-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+
+
+    <script src="../JS/home.js" defer></script>
 </head>
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
@@ -30,21 +33,24 @@
         <a class="navbar-brand text-end" href=""><i class="fas fa-user"></i></a>
     </nav>
 
-    <section class="sectionMargin">
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+    <section class="sectionSearch">
+        <form class="d-flex ms-3 me-3" role="search">
+            <input class="form-control me-2 searchbar" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
         </form>
-        <p class="m-3">Filter<i class="fas fa-caret-down ms-2"></i></p>
-        <div class="row">
+        <p class="m-3" style="cursor:pointer;" onclick="filter()">Filter<i class="fas fa-caret-right ms-2" id="carretFilter"></i></p>
+        <div class="row m-2 collapse" id="filterItems">
             <div class="col">
-                
+                Themes:
+            </div>
+            <div class="col">
+                Author:
             </div>
         </div>
     </section>
    
 
-    <section class="mt-auto">
+    <section>
         <div class="row m-3">
             <div class="col p-3">
                 <div class="card" style="width: 18rem;">

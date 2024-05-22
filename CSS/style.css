@@ -4,6 +4,11 @@
 |                                   |
 -----------------------------------*/
 
-.sectionMargin{
+.sectionSearch{
     margin-top: 80px;
+    padding-left: 25%;
+}
+
+.searchbar{
+    width: 50% !important;
 }

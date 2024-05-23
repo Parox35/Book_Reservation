@@ -1,3 +1,8 @@
+<?php
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +31,7 @@
 
                   <div id="div_login">
                     <h3 class="text-center">Login</h3>
-                    <form action="" class="text-center">
+                    <form action="." method="POST" class="text-center">
                       <div class="row">
                         <label for="">Email:</label>
                         <input type="email" class="col-sm-6 mx-auto">

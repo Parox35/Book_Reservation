@@ -1,4 +1,4 @@
-function filter(){
+function showFilter(){
     if(document.getElementById("carretFilter").classList.contains("fa-caret-right")){
         document.getElementById("carretFilter").classList.remove("fa-caret-right");
         document.getElementById("carretFilter").classList.add("fa-caret-down");

@@ -26,13 +26,10 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-book"></i></a>
+            <a class="navbar-brand" href="./home.php"><i class="fas fa-book"></i></a>
         </div>
         <div class="container-fluid">
-            <form class="d-flex">
-                <input class="form-control me-2" type="text" placeholder="Search">
-                <a href="#" class="navbar-brand"><i class="fas fa-search"></i></a>
-            </form>
+            <a class="navbar-brand collapse" href="./edit.php"><i class="fas fa-book">Add book</i></a>
         </div>
         <a class="navbar-brand text-end" href=""><i class="fas fa-user"></i></a>
     </nav>
@@ -110,7 +107,7 @@
                     if($books = mysqli_query($conn, $sql)){
                         if(mysqli_num_rows($books) > 0){
                             while ($book = mysqli_fetch_array($books)){
-                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./HTML/details.html" class="card-link btn btn-secondary">Reservate</a><a href="./HTML/details.html" class="card-link btn btn-secondary">Details</a> </div></div></div>';
+                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a><a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Edit</a> </div></div></div>';
                             }
                         }
                         

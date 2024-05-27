@@ -1,3 +1,7 @@
+body{
+    text-align: justify;    
+}
+
 /*-----------------------------------
 |                                   |
 |           Home page               |
@@ -11,4 +15,56 @@
 
 .searchbar{
     width: 50% !important;
+}
+
+/*-----------------------------------
+|                                   |
+|         Reservate page            |
+|                                   |
+-----------------------------------*/
+
+.sectionStart{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+#reservationForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imgCard{
+    max-width: 350px;
+    max-height: 500px;
+    object-fit: fill;
+}
+
+fieldset{
+    display: block;
+    margin-inline-start: 2px !important;
+    margin-inline-end: 2px !important;
+    padding-block-start: 0.35em !important;
+    padding-inline-start: 0.75em !important;
+    padding-inline-end: 0.75em !important;
+    padding-block-end: 0.625em !important;
+    min-inline-size: min-content !important;
+    border-width: 2px !important;
+    border-style: groove !important;
+    border-color: rgb(192, 192, 192) !important;
+    border-image: initial !important;
+}
+
+legend{
+    display: block !important;
+    padding-inline-start: 2px !important;
+    padding-inline-end: 2px !important;
+    unicode-bidi: isolate !important;
+    border-width: initial !important;
+    border-style: none !important;
+    border-color: initial !important;
+    border-image: initial !important;
+    float: none !important;
+    width: fit-content !important;
 }

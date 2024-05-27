@@ -31,7 +31,7 @@
         <div class="container-fluid">
             <a class="navbar-brand collapse" href="./edit.php"><i class="fas fa-book">Add book</i></a>
         </div>
-        <a class="navbar-brand text-end" href=""><i class="fas fa-user"></i></a>
+        <a class="navbar-brand text-end" href="./profile.php"><i class="fas fa-user"></i></a>
     </nav>
 
     <section class="sectionSearch">

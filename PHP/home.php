@@ -1,5 +1,16 @@
 <?php
+    session_start();
     require_once("config.php");
+    if (!isset($_SESSION['email'])) {         // condition Check: if session is not set. 
+        header('location: ../index.php');   // if not set the user is sendback to login page.
+        exit;
+    }
+    if (isset($_POST['logout'])) {
+        session_destroy();            //  destroys session 
+        header('location: ../index.php');
+        exit;
+    }
+    
 ?>
 
 <!DOCTYPE html>
@@ -7,8 +18,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--Favicon
-    <link rel="shortcut icon" href="http://www.w3.org/2000/svg">-->
     <title>Library</title>
 
 
@@ -31,7 +40,14 @@
         <div class="container-fluid">
             <a class="navbar-brand collapse" href="./edit.php"><i class="fas fa-book">Add book</i></a>
         </div>
-        <a class="navbar-brand text-end" href="./profile.php"><i class="fas fa-user"></i></a>
+        <div class="dropdown dropstart">
+            <a class="navbar-brand text-end" data-bs-toggle="dropdown" href="./profile.php"><i class="fas fa-user"></i></a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="./profile.php">Profile</a></li>
+                <li><form action="" method="POST"><button class="dropdown-item" type="submit" name="logout">Log out</button></form></li>
+            </ul>
+        </div>
+        
     </nav>
 
     <section class="sectionSearch">
@@ -103,11 +119,25 @@
                         $sql = "SELECT * FROM book";
                     }
                     
+                    $email = $_SESSION["email"];
+                    $query = "SELECT Admin FROM users WHERE Email='$email'";
+                    if($user = mysqli_query($conn, $query)){
+                        if(mysqli_num_rows($user) > 0){
+                            $user = mysqli_fetch_array($user);
+                            $admin = $user["Admin"];
+                        }
+                    }
 
                     if($books = mysqli_query($conn, $sql)){
                         if(mysqli_num_rows($books) > 0){
                             while ($book = mysqli_fetch_array($books)){
-                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a><a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Edit</a> </div></div></div>';
+                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a>';
+                                
+                                if($admin == 1){
+                                    echo '<a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Edit</a>';
+                                    echo '<a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary"><i class="fas fa-trash-alt"></i></a>';
+                                }
+                                echo '</div></div></div>';
                             }
                         }
                         

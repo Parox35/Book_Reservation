@@ -9,6 +9,9 @@ session_start();
     //Register/Sign up
     if(isset($_POST["sign_up"])){
       $email = $_POST['email'];
+      if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Invalid email format";
+      }
       $firstName = $_POST['firstName'];
       $lastName = $_POST['lastName'];
       $password = $_POST['password'];
@@ -23,7 +26,7 @@ session_start();
       $firstName = mysqli_real_escape_string($conn, $firstName);
       $lastName = mysqli_real_escape_string($conn, $lastName);
 
-      $password = password_hash(mysqli_real_escape_string($conn, $_POST['password']), PASSWORD_BCRYPT);
+      $password = password_hash(mysqli_real_escape_string($conn, $password), PASSWORD_BCRYPT);
 
       $sql = "INSERT INTO users VALUES('{$email}','{$firstName}','{$lastName}','{$password}',0)";
       $addUser = mysqli_query($conn, $sql);
@@ -31,8 +34,12 @@ session_start();
       if (!$addUser) {
         echo "Something went wrong" . mysqli_error($conn);
       } else {
-        //popup
-        header('location: index.php');
+        echo '<script type="text/javascript">
+              window.onload = function() {
+                  var myModal = new bootstrap.Modal(document.getElementById("createModal"));
+                  myModal.show();}
+            </script>';
+      header('refresh:2; url=index.php');
       }
     }
 
@@ -46,28 +53,26 @@ session_start();
       $email = mysqli_real_escape_string($conn, $email);
       $password = mysqli_real_escape_string($conn, $password);
       
-      $sql = "SELECT * from users WHERE Email = '$email' AND Password = '$password'";
+      $sql = "SELECT * from users WHERE Email = '$email'";
       $user = mysqli_query($conn, $sql);
 
       if (!$user) {
         die('query Failed' . mysqli_error($conn));
       }
-      $user_email = "";
-      $user_password = "";
+
       if(mysqli_num_rows($user) > 0){
-        while ($row = mysqli_fetch_array($user)) {
+          $row = mysqli_fetch_array($user);
+          $hashed_password = $row['Password'];
 
-          $user_email = $row['Email'];
-          $user_password = $row['Password'];
-        }
-      }
-      if ($user_email == $email  &&  $user_password == $password) {
-
-        $_SESSION['email'] = $user_email;       // Storing the value in session
-        header('location: ./PHP/home.php');
-        exit;
+          if (password_verify($password, $hashed_password)) {
+              $_SESSION['email'] = $row['Email'];  // Storing the value in session
+              header('Location: ./PHP/home.php');
+              exit;
+          } else {
+              echo "Invalid email or password.";
+          }
       } else {
-        header('location: index.php');
+          echo "Invalid email or password.";
       }
     }
   }
@@ -118,28 +123,39 @@ session_start();
                   <!--Sign up-->
                   <div class="collapse" id="div_register">
                     <h3 class="text-center">Sign up</h3>
-                    <form action="" class="text-center">
-                    <div class="row">
-                      <label for="email">Email:</label>
-                      <input type="email" name="email" class="col-sm-6 mx-auto" required>
-                    </div>
-                    <div class="row">
-                      <label for="firstName">First Name:</label>
-                      <input type="text" name="firstName" class="col-sm-6 mx-auto" required>
-                    </div>
-                    <div class="row">
-                      <label for="lastName">Last Name:</label>
-                      <input type="text" name="lastName" class="col-sm-6 mx-auto" required>
-                    </div>
-                    <div class="row">
-                      <label for="password">Password:</label>
-                      <input type="password" name="password" class="col-sm-6 mx-auto" autocomplete="off" required>
-                    </div>
-                      <input type="submit" value="Sign up" name="sign_up" class="m-3 btn btn-outline-success">
+                    <form action="" class="text-center" method="POST">
+                        <div class="row">
+                          <label for="email">Email:</label>
+                          <input type="email" name="email" class="col-sm-6 mx-auto" required>
+                        </div>
+                        <div class="row">
+                          <label for="firstName">First Name:</label>
+                          <input type="text" name="firstName" class="col-sm-6 mx-auto" required>
+                        </div>
+                        <div class="row">
+                          <label for="lastName">Last Name:</label>
+                          <input type="text" name="lastName" class="col-sm-6 mx-auto" required>
+                        </div>
+                        <div class="row">
+                          <label for="password">Password:</label>
+                          <input type="password" name="password" class="col-sm-6 mx-auto" autocomplete="off" required>
+                        </div>
+                          <button type="submit" name="sign_up" class="m-3 btn btn-outline-success">Sign up</button>
                     </form>
                   </div>
 
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createmodalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="createmodalLabel">Account created</h1>
+              </div>
             </div>
         </div>
     </div>

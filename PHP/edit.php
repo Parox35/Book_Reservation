@@ -51,11 +51,27 @@
             $pub_date = $_POST["pub_date"];
             $theme = $_POST["theme"];
 
+            //Protection against SQL Injections
+            $bookId = stripcslashes($bookId);
+            $image = stripcslashes($image);
+            $title = stripcslashes($title);
+            $description = stripcslashes($description);
+            $author = stripcslashes($author);
+            $pub_date = stripcslashes($pub_date);
+            $theme = stripcslashes($theme);
+
+            $bookId = mysqli_real_escape_string($conn, $bookId);
+            $image = mysqli_real_escape_string($conn, $image);
+            $title = mysqli_real_escape_string($conn, $title);
+            $description = mysqli_real_escape_string($conn, $description);
+            $author = mysqli_real_escape_string($conn, $author);
+            $pub_date = mysqli_real_escape_string($conn, $pub_date);
+            $theme = mysqli_real_escape_string($conn, $theme);
+
             $sql = "UPDATE book SET `Title` = '$title', `Image` = '$image', `Author`='$author', `Theme`='$theme', `Description`='$description', `Publication_date`='$pub_date' WHERE `Id` = $bookId";
 
 
             if(mysqli_query($conn,$sql)){
-                print_r("Book modified");
                 header("Location: ./home.php");
             }else{
                 echo "Something went wrong: $sql";
@@ -110,27 +126,27 @@
             <input type="hidden" name="id" value="<?php echo $id; ?>" />
             <div class="form-group mb-3">
                 <img src="<?php echo $image; ?>" class="form-control imgCard"/>
-                <input type="url" name="imageURL" class="form-control" value="<?php echo $image ?>"/>
+                <input type="url" name="imageURL" class="form-control" value="<?php echo $image ?>" required/>
             </div>
             <div class="form-group mb-3">
                 <label>Title:</label>
-                <input type="text" name="title" value="<?php echo $title; ?>" class="form-control"/>
+                <input type="text" name="title" value="<?php echo $title; ?>" class="form-control" required/>
             </div>
             <div class="form-group mb-3">
                 <label>Date of publication:</label>
-                <input type="number" name="pub_date" value="<?php echo $pub_date; ?>" class="form-control"/>
+                <input type="number" name="pub_date" value="<?php echo $pub_date; ?>" class="form-control" required/>
             </div>
             <div class="form-group mb-3">
                 <label>Author:</label>
-                <input type="text" name="author" value="<?php echo $author; ?>" class="form-control"/>
+                <input type="text" name="author" value="<?php echo $author; ?>" class="form-control" required/>
             </div>
             <div class="form-group mb-3">
                 <label>Theme:</label>
-                <input type="text" name="theme" value="<?php echo $theme; ?>" class="form-control"/>
+                <input type="text" name="theme" value="<?php echo $theme; ?>" class="form-control" required/>
             </div>
             <div class="form-group mb-3">
                 <label>Description:</label>
-                <textarea name="description" class="form-control" style="height:200px;"><?php echo $description; ?></textarea>
+                <textarea name="description" class="form-control" style="height:200px;" required><?php echo $description; ?></textarea>
             </div>
 
             <div class="form-group mb-3 text-center">

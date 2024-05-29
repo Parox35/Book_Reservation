@@ -28,11 +28,8 @@
             }
             
         }
-    }else{
-        header("Location: ./home.php");
     }
-
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
+    elseif($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST["edit"])){
             $bookId = $_POST["id"];
             $image = $_POST["imageURL"];
@@ -42,7 +39,8 @@
             $pub_date = $_POST["pub_date"];
             $theme = $_POST["theme"];
 
-            $sql = "UPDATE book SET `Title` = '$title',  `Image` = '$image', `Author`=$author, `Theme`=$theme, `Description`=$description, `Publication_date`=$pub_date WHERE `Id` = $id";
+            $sql = "UPDATE book SET `Title` = '$title', `Image` = '$image', `Author`='$author', `Theme`='$theme', `Description`='$description', `Publication_date`='$pub_date' WHERE `Id` = $bookId";
+
 
             if(mysqli_query($conn,$sql)){
                 print_r("Book modified");
@@ -52,6 +50,11 @@
             }
         }
     }
+    else{
+        header("Location: ./home.php");
+    }
+
+    
 ?>
 
 <!DOCTYPE html>
@@ -87,7 +90,7 @@
     </nav>
     
     <main class="sectionEdit">
-        <form action="edit.php" method="POST<">
+        <form action="edit.php" method="POST">
             <input type="hidden" name="id" value="<?php echo $id; ?>" />
             <div class="form-group mb-3">
                 <img src="<?php echo $image; ?>" class="form-control imgCard"/>

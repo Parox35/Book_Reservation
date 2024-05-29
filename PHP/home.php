@@ -21,6 +21,8 @@
         }
     }
 
+    $sql = "SELECT * FROM book";
+
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST["delete"])){
             $bookId = $_POST["bookId"];
@@ -31,6 +33,41 @@
             } else {
                 echo "Erreur lors de la suppression du livre.";
             }
+        }
+        if(isset($_POST["search"])){
+            if(isset($_POST["authors"]) && isset($_POST["themes"])){
+                $author = $_POST["authors"];
+                $theme = $_POST["themes"];
+
+                if(isset($_POST["titleSearch"])){
+                    $title = $_POST["titleSearch"];
+                    $title = stripcslashes($title);
+
+                    $title = mysqli_real_escape_string($conn, $title);
+                    $sql = "SELECT * FROM book WHERE Title LIKE '%$title%'";
+                }
+
+                $author = stripcslashes($author);
+                $theme = stripcslashes($theme);
+
+                $author = mysqli_real_escape_string($conn, $author);
+                $theme = mysqli_real_escape_string($conn, $theme);
+
+
+                if($author == "0" && $theme == "0"){
+                    $sql = $sql;
+                }elseif ($author == "0" || empty($author)){
+                    $sql = $sql . " AND Theme='$theme'";
+                }elseif ($theme == "0" || empty($theme)){
+                    $sql = $sql . " AND Author='$author'";
+                }else{
+                    $sql = $sql . "AND Author='$author' and Theme='$theme'";
+                }
+            }
+           
+        }
+        elseif(isset($_POST["reset"])){
+            $sql = "SELECT * FROM book";
         }
     }
 ?>
@@ -78,9 +115,10 @@
     </nav>
 
     <section class="sectionSearch">
-        <form class="d-flex ms-3 me-3 row" role="search">
-            <input class="form-control me-2 searchbar col-sm-4" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success col-sm-1" type="submit"><i class="fas fa-search"></i></button>
+        <form class="d-flex ms-3 me-3 row" role="search" method="POST">
+            <input class="form-control me-2 searchbar col-sm-4" type="search" placeholder="Search" aria-label="Search" name="titleSearch">
+            <button class="btn btn-outline-success col-sm-1" type="submit" name="search"><i class="fas fa-search"></i></button>
+            <button class="btn btn-light col-sm-1 ms-2" type="submit" name="reset">reset</button>
             <div class="row">
                 <p class="m-3" style="cursor:pointer;" onclick="showFilter()">Filter<i class="fas fa-caret-right ms-2" id="carretFilter"></i></p>
                 <div class="row m-2 collapse" id="filterItems">
@@ -88,9 +126,9 @@
                         Themes:
                         <select name="themes" id="themes">
                         <?php
-                            $sql = "SELECT Theme FROM book";
+                            $query = "SELECT Theme FROM book";
 
-                            if($themes = mysqli_query($conn, $sql)){
+                            if($themes = mysqli_query($conn, $query)){
                                 if(mysqli_num_rows($themes) > 0){
                                     echo '<option value="0">---</option>';
                                     while ($theme = mysqli_fetch_array($themes)){
@@ -105,9 +143,9 @@
                         Authors:
                         <select name="authors" id="authors">
                             <?php
-                                $sql = "SELECT Author FROM book";
+                                $query = "SELECT Author FROM book";
 
-                                if($authors = mysqli_query($conn, $sql)){
+                                if($authors = mysqli_query($conn, $query)){
                                     if(mysqli_num_rows($authors) > 0){
                                         echo '<option value="0">---</option>';
                                         while ($author = mysqli_fetch_array($authors)){
@@ -128,30 +166,10 @@
     <section>
         <div class="row m-3">
                 <?php
-
-                    if(isset($_GET["authors"]) && isset($_GET["themes"])){
-                        $author = $_GET["authors"];
-                        $theme = $_GET["themes"];
-
-                        if($author == "0" && $theme == "0"){
-                            $sql = "SELECT * FROM book";
-                        }elseif ($author == "0" || empty($author)){
-                            $sql = "SELECT * FROM book WHERE Theme='$theme'";
-                        }elseif ($theme == "0" || empty($theme)){
-                            $sql = "SELECT * FROM book WHERE Author='$author'";
-                        }else{
-                            $sql = "SELECT * FROM book WHERE Author='$author' and Theme='$theme'";
-                        }
-                    }else{
-                        $sql = "SELECT * FROM book";
-                    }
-                    
-                    
-
                     if($books = mysqli_query($conn, $sql)){
                         if(mysqli_num_rows($books) > 0){
                             while ($book = mysqli_fetch_array($books)){
-                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a>';
+                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" ><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a>';
                                 
                                 if($admin == 1){
                                     echo '<a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Edit</a>';
@@ -177,7 +195,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure to delete <span id="bookTitle">this book</span>
+                Are you sure to delete <span id="bookTitle">this book</span>?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

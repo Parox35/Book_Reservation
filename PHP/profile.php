@@ -11,12 +11,14 @@
         exit;
     }
 
-    //take the valueof admin (0:no, 1:yes) for the user
+    //Take all the data about the user
     $email = $_SESSION["email"];
-    $query = "SELECT Admin FROM users WHERE Email='$email'";
+    $query = "SELECT * FROM users WHERE Email='$email'";
     if($user = mysqli_query($conn, $query)){
         if(mysqli_num_rows($user) > 0){
             $user = mysqli_fetch_array($user);
+            $firstName = $user["FirstName"];
+            $lastName = $user["LastName"];
             $admin = $user["Admin"];
         }
     }
@@ -58,8 +60,53 @@
         
     </nav>
     
-    <main>
-        
+    <main class="sectionEdit">
+        <div class="container text-center fs-1 text">
+            <div class="row">
+                <div class="col">
+                    <label>First Name: <?php echo "$firstName"; ?></label>
+                </div>
+                <div class="col">
+                    <label>Last Name: <?php echo "$lastName"; ?></label>
+                </div>
+            </div>
+            <div>
+            <table class="table table-striped mt-3 col-sm-4">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>End of the reservation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $query = "SELECT * FROM reservation WHERE Email='$email'";
+                        if($reservations = mysqli_query($conn, $query)){
+                            if(mysqli_num_rows($reservations) > 0){
+                                while ($book = mysqli_fetch_array($reservations)){
+                                    $endReservation = $book["EndReservation"];
+                                    $bookId =$book["Id_book"];
+
+                                    $bookQuery = "SELECT * FROM book WHERE Id='$bookId'";
+                                    if ($bookResult = mysqli_query($conn, $bookQuery)) {
+                                        if (mysqli_num_rows($bookResult) > 0) {
+                                            $book = mysqli_fetch_array($bookResult);
+                                            $title = $book["Title"];
+                                        }
+                                    }
+                                    echo "<tr>";
+                                    echo "<td>$title</td>";
+                                    echo "<td>$endReservation</td>";
+                                    echo "</tr>";
+                                }
+                            }
+                        }
+
+                    ?>
+                </tbody>
+            </table>
+            </div>
+        </div>
     </main>
     
     <footer class="bg-dark mt-auto">

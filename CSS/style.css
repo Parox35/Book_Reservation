@@ -68,3 +68,15 @@ legend{
     float: none !important;
     width: fit-content !important;
 }
+
+/*-----------------------------------
+|                                   |
+|           Edit page               |
+|                                   |
+-----------------------------------*/
+
+.sectionEdit{
+    margin-top: 90px;
+    display: flex;
+    justify-content: center;
+}

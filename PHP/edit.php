@@ -1,3 +1,59 @@
+<?php
+    session_start();
+    require_once("config.php");
+    if (!isset($_SESSION['email'])) {         // condition Check: if session is not set. 
+        header('location: ../index.php');   // if not set the user is sendback to login page.
+        exit;
+    }
+    if (isset($_POST['logout'])) {
+        session_destroy();            //  destroys session 
+        header('location: ../index.php');
+        exit;
+    }
+    if(isset($_GET["Id"])){
+        $id = $_GET["Id"];
+
+        $sql = "SELECT * FROM book WHERE Id=$id";
+
+        if($books = mysqli_query($conn, $sql)){
+            if(mysqli_num_rows($books) > 0){
+                while ($book = mysqli_fetch_array($books)){
+                    $image = $book["Image"];
+                    $title = $book["Title"];
+                    $description = $book["Description"];
+                    $author = $book["Author"];
+                    $pub_date = $book["Publication_date"];
+                    $theme = $book["Theme"];
+                }
+            }
+            
+        }
+    }else{
+        header("Location: ./home.php");
+    }
+
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        if(isset($_POST["edit"])){
+            $bookId = $_POST["id"];
+            $image = $_POST["imageURL"];
+            $title = $_POST["title"];
+            $description = $_POST["description"];
+            $author = $_POST["author"];
+            $pub_date = $_POST["pub_date"];
+            $theme = $_POST["theme"];
+
+            $sql = "UPDATE book SET `Title` = '$title',  `Image` = '$image', `Author`=$author, `Theme`=$theme, `Description`=$description, `Publication_date`=$pub_date WHERE `Id` = $id";
+
+            if(mysqli_query($conn,$sql)){
+                print_r("Book modified");
+                header("Location: ./home.php");
+            }else{
+                echo "Something went wrong: $sql";
+            }
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,36 +69,56 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="./home.php"><i class="fas fa-book"></i></a>
         </div>
         <div class="container-fluid">
-            <a class="navbar-brand collapse" href="#"><i class="fas fa-book">Add book</i></a>
+            <a class="navbar-brand collapse" href="./edit.php"><i class="fas fa-book">Add book</i></a>
         </div>
-        <a class="navbar-brand text-end" href="./profile.php"><i class="fas fa-user"></i></a>
+        <div class="dropdown dropstart">
+            <a class="navbar-brand text-end" data-bs-toggle="dropdown" href="./profile.php"><i class="fas fa-user"></i></a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="./profile.php">Profile</a></li>
+                <li><form action="" method="POST"><button class="dropdown-item" type="submit" name="logout">Log out</button></form></li>
+            </ul>
+        </div>
+        
     </nav>
     
-    <main class="sectionStart">
-        <?php
-            require_once("./config.php");
-            if(isset($_GET["Id"])){
-                $id = $_GET["Id"];
+    <main class="sectionEdit">
+        <form action="edit.php" method="POST<">
+            <input type="hidden" name="id" value="<?php echo $id; ?>" />
+            <div class="form-group mb-3">
+                <img src="<?php echo $image; ?>" class="form-control imgCard"/>
+                <input type="url" name="imageURL" class="form-control" value="<?php echo $image ?>"/>
+            </div>
+            <div class="form-group mb-3">
+                <label>Title:</label>
+                <input type="text" name="title" value="<?php echo $title; ?>" class="form-control"/>
+            </div>
+            <div class="form-group mb-3">
+                <label>Date of publication:</label>
+                <input type="number" name="pub_date" value="<?php echo $pub_date; ?>" class="form-control"/>
+            </div>
+            <div class="form-group mb-3">
+                <label>Author:</label>
+                <input type="text" name="author" value="<?php echo $author; ?>" class="form-control"/>
+            </div>
+            <div class="form-group mb-3">
+                <label>Theme:</label>
+                <input type="text" name="theme" value="<?php echo $theme; ?>" class="form-control"/>
+            </div>
+            <div class="form-group mb-3">
+                <label>Description:</label>
+                <textarea name="description" class="form-control" style="height:200px;"><?php echo $description; ?></textarea>
+            </div>
 
-                $sql = "SELECT * FROM book WHERE Id=$id";
-
-                if($books = mysqli_query($conn, $sql)){
-                    if(mysqli_num_rows($books) > 0){
-                        while ($book = mysqli_fetch_array($books)){
-                            echo '<div class="col-md-5 align-middle p-3"><div class="card"><div style="text-align:center;"><img src="'. $book["Image"] .'" class="card-img-top imgCard mt-1" alt="..."></div><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul></div></div>';
-                        }
-                    }
-                    
-                }
-            }else{
-                header("Location: ./home.php");
-            }
-        ?>
+            <div class="form-group mb-3 text-center">
+                <input type="submit" class="btn btn-success" name="edit" value="Submit">
+                <a href="./home.php" class="btn btn-primary">Back</a>
+            </div>
+        </form>
     </main>
     
     <footer class="bg-dark mt-auto">

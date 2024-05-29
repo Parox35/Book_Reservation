@@ -24,9 +24,9 @@
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST["delete"])){
             $bookId = $_POST["bookId"];
-            $query = "DELETE FROM book WHERE Id='$bookId'";
-            if(mysqli_query($conn, $query)){
-                header('Location: home.php');
+            $sql = "DELETE FROM book WHERE Id='$bookId'";
+            if(mysqli_query($conn, $sql)){
+                header('Location: ./home.php');
                 exit;
             } else {
                 echo "Erreur lors de la suppression du livre.";

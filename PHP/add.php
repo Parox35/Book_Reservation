@@ -11,50 +11,50 @@
         exit;
     }
     
-       //take the valueof admin (0:no, 1:yes) for the user
-       $email = $_SESSION["email"];
-       $query = "SELECT Admin FROM users WHERE Email='$email'";
-       if($user = mysqli_query($conn, $query)){
-           if(mysqli_num_rows($user) > 0){
-               $user = mysqli_fetch_array($user);
-               $admin = $user["Admin"];
-           }
-       }
-
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-        if(isset($_POST["add"])){
-            $image = $_POST["imageURL"];
-            $title = $_POST["title"];
-            $description = $_POST["description"];
-            $author = $_POST["author"];
-            $pub_date = $_POST["pub_date"];
-            $theme = $_POST["theme"];
-
-            //Protection against SQL Injections
-            $image = stripcslashes($image);
-            $title = stripcslashes($title);
-            $description = stripcslashes($description);
-            $author = stripcslashes($author);
-            $pub_date = stripcslashes($pub_date);
-            $theme = stripcslashes($theme);
-
-            $image = mysqli_real_escape_string($conn, $image);
-            $title = mysqli_real_escape_string($conn, $title);
-            $description = mysqli_real_escape_string($conn, $description);
-            $author = mysqli_real_escape_string($conn, $author);
-            $pub_date = mysqli_real_escape_string($conn, $pub_date);
-            $theme = mysqli_real_escape_string($conn, $theme);
-
-            $sql = "INSERT INTO book (Title, Author, Publication_date, Description, Theme, Image) VALUES ('$title', '$author', '$pub_date', '$description',  '$theme', '$image')";
-
-
-            if(mysqli_query($conn,$sql)){
-                header("Location: ./home.php");
-            }else{
-                echo "Something went wrong: $sql";
-            }
-        }  
+    //take the valueof admin (0:no, 1:yes) for the user
+    $email = $_SESSION["email"];
+    $query = "SELECT Admin FROM users WHERE Email='$email'";
+    if($user = mysqli_query($conn, $query)){
+        if(mysqli_num_rows($user) > 0){
+            $user = mysqli_fetch_array($user);
+            $admin = $user["Admin"];
+        }
     }
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    if(isset($_POST["add"])){
+        $image = $_POST["imageURL"];
+        $title = $_POST["title"];
+        $description = $_POST["description"];
+        $author = $_POST["author"];
+        $pub_date = $_POST["pub_date"];
+        $theme = $_POST["theme"];
+
+        //Protection against SQL Injections
+        $image = stripcslashes($image);
+        $title = stripcslashes($title);
+        $description = stripcslashes($description);
+        $author = stripcslashes($author);
+        $pub_date = stripcslashes($pub_date);
+        $theme = stripcslashes($theme);
+
+        $image = mysqli_real_escape_string($conn, $image);
+        $title = mysqli_real_escape_string($conn, $title);
+        $description = mysqli_real_escape_string($conn, $description);
+        $author = mysqli_real_escape_string($conn, $author);
+        $pub_date = mysqli_real_escape_string($conn, $pub_date);
+        $theme = mysqli_real_escape_string($conn, $theme);
+
+        $sql = "INSERT INTO book (Title, Author, Publication_date, Description, Theme, Image) VALUES ('$title', '$author', '$pub_date', '$description',  '$theme', '$image')";
+
+
+        if(mysqli_query($conn,$sql)){
+            header("Location: ./home.php");
+        }else{
+            echo "Something went wrong: $sql";
+        }
+    }  
+}
     
     
 ?>

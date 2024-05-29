@@ -10,6 +10,18 @@
         header('location: ../index.php');
         exit;
     }
+
+    //take the valueof admin (0:no, 1:yes) for the user
+    $email = $_SESSION["email"];
+    $query = "SELECT Admin FROM users WHERE Email='$email'";
+    if($user = mysqli_query($conn, $query)){
+        if(mysqli_num_rows($user) > 0){
+            $user = mysqli_fetch_array($user);
+            $admin = $user["Admin"];
+        }
+    }
+
+
     if(isset($_GET["Id"])){
         $id = $_GET["Id"];
 
@@ -77,7 +89,11 @@
             <a class="navbar-brand" href="./home.php"><i class="fas fa-book"></i></a>
         </div>
         <div class="container-fluid">
-            <a class="navbar-brand collapse" href="./edit.php"><i class="fas fa-book">Add book</i></a>
+            <?php
+                if($admin == 1){
+                    echo '<a class="navbar-brand" href="./add.php">Add book</i></a>';
+                }
+            ?>
         </div>
         <div class="dropdown dropstart">
             <a class="navbar-brand text-end" data-bs-toggle="dropdown" href="./profile.php"><i class="fas fa-user"></i></a>

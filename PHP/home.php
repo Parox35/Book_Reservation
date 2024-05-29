@@ -62,7 +62,7 @@
         <div class="container-fluid">
             <?php
             if($admin == 1){
-                echo '<a class="navbar-brand" href="./edit.php">Add book</i></a>';
+                echo '<a class="navbar-brand" href="./add.php">Add book</i></a>';
             }
             
             ?>

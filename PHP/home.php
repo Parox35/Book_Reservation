@@ -10,7 +10,29 @@
         header('location: ../index.php');
         exit;
     }
-    
+
+    //take the valueof admin (0:no, 1:yes) for the user
+    $email = $_SESSION["email"];
+    $query = "SELECT Admin FROM users WHERE Email='$email'";
+    if($user = mysqli_query($conn, $query)){
+        if(mysqli_num_rows($user) > 0){
+            $user = mysqli_fetch_array($user);
+            $admin = $user["Admin"];
+        }
+    }
+
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        if(isset($_POST["delete"])){
+            $bookId = $_POST["bookId"];
+            $query = "DELETE FROM book WHERE Id='$bookId'";
+            if(mysqli_query($conn, $query)){
+                header('Location: home.php');
+                exit;
+            } else {
+                echo "Erreur lors de la suppression du livre.";
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +60,12 @@
             <a class="navbar-brand" href="./home.php"><i class="fas fa-book"></i></a>
         </div>
         <div class="container-fluid">
-            <a class="navbar-brand collapse" href="./edit.php"><i class="fas fa-book">Add book</i></a>
+            <?php
+            if($admin == 1){
+                echo '<a class="navbar-brand" href="./edit.php">Add book</i></a>';
+            }
+            
+            ?>
         </div>
         <div class="dropdown dropstart">
             <a class="navbar-brand text-end" data-bs-toggle="dropdown" href="./profile.php"><i class="fas fa-user"></i></a>
@@ -119,14 +146,7 @@
                         $sql = "SELECT * FROM book";
                     }
                     
-                    $email = $_SESSION["email"];
-                    $query = "SELECT Admin FROM users WHERE Email='$email'";
-                    if($user = mysqli_query($conn, $query)){
-                        if(mysqli_num_rows($user) > 0){
-                            $user = mysqli_fetch_array($user);
-                            $admin = $user["Admin"];
-                        }
-                    }
+                    
 
                     if($books = mysqli_query($conn, $sql)){
                         if(mysqli_num_rows($books) > 0){
@@ -135,7 +155,7 @@
                                 
                                 if($admin == 1){
                                     echo '<a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Edit</a>';
-                                    echo '<a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary"><i class="fas fa-trash-alt"></i></a>';
+                                    echo '<a href="" class="card-link btn btn-secondary" data-bs-toggle="modal" data-bs-target="#deleteModal"  data-id="'. $book["Id"] .'" data-title="'. htmlspecialchars($book["Title"], ENT_QUOTES, 'UTF-8') .'"><i class="fas fa-trash-alt"></i></a>';
                                 }
                                 echo '</div></div></div>';
                             }
@@ -148,7 +168,27 @@
     </section>
         
     
-    
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete book</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure to delete <span id="bookTitle">this book</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <form action="" method="POST" id="deleteForm">
+                    <input type="hidden" name="bookId" id="bookId">
+                    <button type="submit" class="btn btn-primary" name="delete">Delete</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
 
 
     

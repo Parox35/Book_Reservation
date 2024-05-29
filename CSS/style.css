@@ -80,3 +80,13 @@ legend{
     display: flex;
     justify-content: center;
 }
+
+/*-----------------------------------
+|                                   |
+|           Add  page               |
+|                                   |
+-----------------------------------*/
+
+.inputAdd{
+    width: 40rem !important;
+}

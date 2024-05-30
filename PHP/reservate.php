@@ -1,10 +1,12 @@
 <?php
     session_start();
     require_once("config.php");
+    //Check if an user is connected
     if (!isset($_SESSION['email'])) {         // condition Check: if session is not set. 
         header('location: ../index.php');   // if not set the user is sendback to login page.
         exit;
     }
+    //To deconnect the user
     if (isset($_POST['logout'])) {
         session_destroy();            //  destroys session 
         header('location: ../index.php');
@@ -20,7 +22,7 @@
         }
     }
 
-    require_once("config.php");
+    //Get all the information about the book
     if(isset($_GET["Id"])){
         $id = $_GET["Id"];
 
@@ -43,12 +45,13 @@
         header("Location: ./home.php");
     }
 
-
+    //Variable to know if the dates of reservation of the book are free (0=free, 1=Booked)
+    $free = 0;
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST["reservate"])){
-            $StartReservation = $_POST["startReservation"];
-            $endReservation = $_POST["endReservation"];
+            $StartReservation = $_POST["StartReservation"];
+            $endReservation = $_POST["EndReservation"];
     
             //Protection against SQL Injections
             $StartReservation = stripcslashes($StartReservation);
@@ -57,22 +60,40 @@
             $StartReservation = mysqli_real_escape_string($conn, $StartReservation);
             $endReservation = mysqli_real_escape_string($conn, $endReservation);
 
+            //Take all the reservation that exist for this book
+            $sql = "SELECT * FROM reservation WHERE Id_book=$id";
 
-    
-            $sql = "INSERT INTO book (Title, Author, Publication_date, Description, Theme, Image) VALUES ('$title', '$author', '$pub_date', '$description',  '$theme', '$image')";
-    
-    
-            if(mysqli_query($conn,$sql)){
-                echo '<script type="text/javascript">
-                        window.onload = function() {
-                            var myModal = new bootstrap.Modal(document.getElementById("reservationModal"));
-                            myModal.show();
+            //Check if the reservation is available
+            if($reservations = mysqli_query($conn, $sql)){
+                if(mysqli_num_rows($reservations) > 0){
+                    while($reservation = mysqli_fetch_array($reservations)){
+                        $start = $reservation["StartReservation"];
+                        $end = $reservation["EndReservation"];
+
+                        if(($StartReservation > $start && $StartReservation < $end) || ($endReservation > $start && $endReservation < $end)){
+                            $free = 1;
+                            break;
                         }
-                    </script>';
-                header('refresh:2; url=./home.php');
-            }else{
-                echo "Something went wrong: $sql";
+                    }
+                }
             }
+
+            //Add the reservation to the database if it is available ansd return to the home page
+            if($free != 1){
+                $sql = "INSERT INTO reservation (StartReservation, EndReservation, Email, Id_book) VALUES ('$StartReservation', '$endReservation', '$email',  '$id')";
+                if(mysqli_query($conn,$sql)){
+                    echo '<script type="text/javascript">
+                            window.onload = function() {
+                                var myModal = new bootstrap.Modal(document.getElementById("reservationModal"));
+                                myModal.show();
+                            }
+                        </script>';
+                    header('refresh:2; url=./home.php');
+                }else{
+                    echo "Something went wrong: $sql";
+                }
+            }
+            
         }  
     }
 
@@ -137,6 +158,7 @@
                 <fieldset class="m-2">
                     <legend>Reservation:</legend>
                     <div class="row m-2">
+                        <span id="errorDate" class="mb-2 text-danger h6"></span>
                         <label for="StartReservation">Start of reservation:</label>
                         <input type="Date" name="StartReservation" min="<?php $t=time(); echo(date("Y-m-d",$t)); ?>" id="StartReservation" disabled-dates="2024-06-04" class="col-sm-4" required onchange="updateMin()" disabled-dates="2024-06-04, 2024-06-15"/>
                         
@@ -152,7 +174,7 @@
         
     </main>
     
-    <!-- Modal -->
+    <!-- Modal to say to the user that is reservation is done-->
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationmodalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -167,4 +189,24 @@
         <p class="text-center text-secondary p-3 m-0">© 2024 Company, Inc</p>
     </footer>
 </body>
+
+    <?php
+        //Verify if the variable free is at 1 (= There is already one reservation at this dates) and execute the script to show the text to the user
+        if($free == 1){
+            $startDate = new DateTime($start);
+            $endDate = new DateTime($end);
+
+            // Format the dates
+            $startFormatted = $startDate->format('l, F jS Y');
+            $endFormatted = $endDate->format('l, F jS Y');
+            echo '<script type="text/javascript">
+                    document.getElementById("errorDate").innerHTML = "The book is already reserved during ';
+                    echo $startFormatted;
+                    echo ' to ';
+                    echo $endFormatted;
+                    echo '.";
+                </script>';
+        }
+        
+    ?>
 </html>

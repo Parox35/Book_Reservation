@@ -3,4 +3,3 @@ function updateMin(){
     var date = document.getElementById("StartReservation").value;
     document.getElementById("EndReservation").min = date;
 }
-

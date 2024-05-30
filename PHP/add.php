@@ -82,6 +82,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <?php
             if($admin == 1){
                 echo '<a class="navbar-brand" href="./add.php">Add book</i></a>';
+                echo '</div>';
+                echo '<div class="container-fluid">';
                 echo '<a class="navbar-brand" href="./manage.php">Management</i></a>';
             }
             

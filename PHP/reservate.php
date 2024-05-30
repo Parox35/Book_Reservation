@@ -191,7 +191,7 @@
 </body>
 
     <?php
-        //Verify if the variable free is at 1 (= There is already one reservation at this dates) and execute the script to show the text to the user
+        //Verify if the variable free is at 1 (= There is already one reservation at this dates) and execute the script to show the date where the book is reservate to the user
         if($free == 1){
             $startDate = new DateTime($start);
             $endDate = new DateTime($end);

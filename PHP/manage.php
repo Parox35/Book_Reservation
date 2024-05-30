@@ -21,40 +21,44 @@
         }
     }
 
-    // Update admin status when the Modify button is pressed
-    if (isset($_POST['ModifyAdmin'])) {
-        $sql = "SELECT * FROM users";
-        if ($users = mysqli_query($conn, $sql)) {
-            if (mysqli_num_rows($users) > 0) {
-                while ($user = mysqli_fetch_array($users)) {
-                    $userEmail = $user["Email"];
-                    $firstName = $user["FirstName"];
-                    $lastName = $user["LastName"];
-                    $adminStatus = $user["Admin"];
-                    $status = isset($_POST["admin_$firstName$lastName"]) ? 1 : 0;   //Put to 1 if the checkbox is check otherwise 0
-                    if($status != $adminStatus && $userEmail != $email){
-                        $updateQuery = "UPDATE users SET Admin='$status' WHERE Email='$userEmail'";
-                        if(mysqli_query($conn, $updateQuery)){
-                            echo $status;
-                        } else {
-                            echo "Erreur lors de la suppression du livre.";
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+        // Update admin status when the Modify button is pressed
+        if (isset($_POST['ModifyAdmin'])) {
+            $sql = "SELECT * FROM users";
+            if ($users = mysqli_query($conn, $sql)) {
+                if (mysqli_num_rows($users) > 0) {
+                    while ($user = mysqli_fetch_array($users)) {
+                        $userEmail = $user["Email"];
+                        $firstName = $user["FirstName"];
+                        $lastName = $user["LastName"];
+                        $adminStatus = $user["Admin"];
+                        $status = isset($_POST["admin_$firstName$lastName"]) ? 1 : 0;   //Put to 1 if the checkbox is check otherwise 0
+                        if($status != $adminStatus && $userEmail != $email){
+                            $updateQuery = "UPDATE users SET Admin='$status' WHERE Email='$userEmail'";
+                            if(mysqli_query($conn, $updateQuery)){
+                                echo $status;
+                            } else {
+                                echo "Erreur lors de la suppression du livre.";
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    if(isset($_POST["deleteReservation"])){
-        $reservationId = $_POST["id"];
-        $sql = "DELETE FROM reservation WHERE Id='$reservationId'";
-        if(mysqli_query($conn, $sql)){
+        //Delete Reservation
+        if(isset($_POST["deleteReservation"])){
+            $reservationId = $_POST["id"];
+            $sql = "DELETE FROM reservation WHERE Id='$reservationId'";
+            if(mysqli_query($conn, $sql)){
 
-        } else {
-            echo "Erreur lors de la suppression du livre.";
+            } else {
+                echo "Erreur lors de la suppression du livre.";
+            }
         }
     }
+    
 ?>
-deleteReservation
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,29 +117,30 @@ deleteReservation
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT * FROM users";
-                            if ($users = mysqli_query($conn, $query)) {
-                                if (mysqli_num_rows($users) > 0) {
-                                    while ($user = mysqli_fetch_array($users)) {
-                                        $firstName = $user["FirstName"];
-                                        $lastName = $user["LastName"];
-                                        $administrator = $user["Admin"];
-                                        $userEmail = $user["Email"];
-                                        echo "<tr>";
-                                        echo "<td>$firstName</td>";
-                                        echo "<td>$lastName</td>";
-                                        echo "<td><input type='checkbox' name='admin_$firstName$lastName' ";
-                                        if ($administrator == 1) {
-                                            echo "checked";
+                                //Show all the users in a table
+                                $query = "SELECT * FROM users";
+                                if ($users = mysqli_query($conn, $query)) {
+                                    if (mysqli_num_rows($users) > 0) {
+                                        while ($user = mysqli_fetch_array($users)) {
+                                            $firstName = $user["FirstName"];
+                                            $lastName = $user["LastName"];
+                                            $administrator = $user["Admin"];
+                                            $userEmail = $user["Email"];
+                                            echo "<tr>";
+                                            echo "<td>$firstName</td>";
+                                            echo "<td>$lastName</td>";
+                                            echo "<td><input type='checkbox' name='admin_$firstName$lastName' ";
+                                            if ($administrator == 1) {
+                                                echo "checked";
+                                            }
+                                            if ($email == $userEmail) {
+                                                echo " disabled";
+                                            }
+                                            echo "></td>";
+                                            echo '</tr>';
                                         }
-                                        if ($email == $userEmail) {
-                                            echo " disabled";
-                                        }
-                                        echo "></td>";
-                                        echo '</tr>';
                                     }
                                 }
-                            }
                             ?>
                         </tbody>
                     </table>
@@ -154,6 +159,7 @@ deleteReservation
                     </thead>
                     <tbody>
                         <?php
+                            //Show all the reservation in a table with a bin to delete it if necessary
                             $query = "SELECT * FROM reservation ORDER BY Email";
                             if($reservations = mysqli_query($conn, $query)){
                                 if(mysqli_num_rows($reservations) > 0){
@@ -195,7 +201,7 @@ deleteReservation
         </div>
     </main>
     
-    <!-- Modal -->
+    <!-- Modal for deleting a reservation-->
     <div class="modal fade" id="deleteReservationModal" tabindex="-1" aria-labelledby="deleteReservationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

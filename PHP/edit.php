@@ -21,7 +21,7 @@
         }
     }
 
-
+    //Get all information about the book
     if(isset($_GET["Id"])){
         $id = $_GET["Id"];
 
@@ -43,6 +43,7 @@
     }
     elseif($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST["edit"])){
+            //Get all information from the form
             $bookId = $_POST["id"];
             $image = $_POST["imageURL"];
             $title = $_POST["title"];

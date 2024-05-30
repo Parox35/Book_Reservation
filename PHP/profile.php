@@ -84,6 +84,7 @@
                 </thead>
                 <tbody>
                     <?php
+                        //Show all the reservation the user have
                         $query = "SELECT * FROM reservation WHERE Email='$email'";
                         if($reservations = mysqli_query($conn, $query)){
                             if(mysqli_num_rows($reservations) > 0){

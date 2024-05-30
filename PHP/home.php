@@ -22,7 +22,7 @@
     }
 
     $sql = "SELECT * FROM book";
-
+    //Check if request post is use and after check which post form is click (delete, search)
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         if(isset($_POST["delete"])){
             $bookId = $_POST["bookId"];
@@ -47,13 +47,14 @@
                     $sql = "SELECT * FROM book WHERE Title LIKE '%$title%'";
                 }
 
+                //protection against SQL injection 
                 $author = stripcslashes($author);
                 $theme = stripcslashes($theme);
 
                 $author = mysqli_real_escape_string($conn, $author);
                 $theme = mysqli_real_escape_string($conn, $theme);
 
-
+                //Check all the possibility for the filter
                 if($author == "0" && $theme == "0"){
                     $sql = $sql;
                 }elseif ($author == "0" || empty($author)){
@@ -98,6 +99,7 @@
         </div>
         <div class="container-fluid">
             <?php
+            //Show the add book and management link if the user is administrator
             if($admin == 1){
                 echo '<a class="navbar-brand" href="./add.php">Add book</i></a>';
                 echo '</div>';
@@ -129,6 +131,7 @@
                         Themes:
                         <select name="themes" id="themes">
                         <?php
+                            //Create a drop-down list with the theme in the database
                             $query = "SELECT Theme FROM book";
 
                             if($themes = mysqli_query($conn, $query)){
@@ -146,6 +149,7 @@
                         Authors:
                         <select name="authors" id="authors">
                             <?php
+                            //Create a drop-down list with the authors in the database
                                 $query = "SELECT Author FROM book";
 
                                 if($authors = mysqli_query($conn, $query)){
@@ -169,8 +173,10 @@
     <section>
         <div class="row m-3">
                 <?php
+                    // connect to database with the string sql in the bellow
                     if($books = mysqli_query($conn, $sql)){
                         if(mysqli_num_rows($books) > 0){
+                            //Create a card for each book in the database
                             while ($book = mysqli_fetch_array($books)){
                                 echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" ><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a>';
                                 
@@ -189,7 +195,7 @@
     </section>
         
     
-    <!-- Modal -->
+    <!-- Modal for deleting a book-->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

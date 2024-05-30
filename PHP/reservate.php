@@ -72,7 +72,6 @@
 
                         if(($StartReservation > $start && $StartReservation < $end) || ($endReservation > $start && $endReservation < $end)){
                             $free = 1;
-                            break;
                         }
                     }
                 }

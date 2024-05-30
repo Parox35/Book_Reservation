@@ -21,8 +21,9 @@
         }
     }
 
+    //Check if a request post is use
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(isset($_POST["add"])){
+    if(isset($_POST["add"])){               //Check if the data add is avalaible
         $image = $_POST["imageURL"];
         $title = $_POST["title"];
         $description = $_POST["description"];
@@ -45,6 +46,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $pub_date = mysqli_real_escape_string($conn, $pub_date);
         $theme = mysqli_real_escape_string($conn, $theme);
 
+        //Insert data into the book database
         $sql = "INSERT INTO book (Title, Author, Publication_date, Description, Theme, Image) VALUES ('$title', '$author', '$pub_date', '$description',  '$theme', '$image')";
 
 

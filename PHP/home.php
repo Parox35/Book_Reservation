@@ -100,6 +100,7 @@
             <?php
             if($admin == 1){
                 echo '<a class="navbar-brand" href="./add.php">Add book</i></a>';
+                echo '<a class="navbar-brand" href="./manage.php">Management</i></a>';
             }
             
             ?>
@@ -211,7 +212,7 @@
 
     
     <footer class="bg-dark mt-auto">
-        <p class="text-center text-secondary p-3 m-0">© 2024 Company, Inc</p>
+        <p class="text-center text-secondary p-3 m-0">© 2024, Antoine ESNAULT</p>
     </footer>
 </body>
 </html>

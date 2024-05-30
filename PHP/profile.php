@@ -44,11 +44,13 @@
             <a class="navbar-brand" href="./home.php"><i class="fas fa-book"></i></a>
         </div>
         <div class="container-fluid">
-        <?php
+            <?php
             if($admin == 1){
                 echo '<a class="navbar-brand" href="./add.php">Add book</i></a>';
+                echo '<a class="navbar-brand" href="./manage.php">Management</i></a>';
             }
-        ?>
+            
+            ?>
         </div>
         <div class="dropdown dropstart">
             <a class="navbar-brand text-end" data-bs-toggle="dropdown" href="./profile.php"><i class="fas fa-user"></i></a>
@@ -110,7 +112,7 @@
     </main>
     
     <footer class="bg-dark mt-auto">
-        <p class="text-center text-secondary p-3 m-0">© 2024 Company, Inc</p>
+        <p class="text-center text-secondary p-3 m-0">© 2024, Antoine ESNAULT</p>
     </footer>
 </body>
 </html>

@@ -14,6 +14,7 @@ A public section for user to reservate books and a admin section to add books an
 - Login
 - Reservate a book in giving the dates of reservation
 - Check your profile with the book you reservate
+- Search book with filter by author and theme
 
 ##### Admin section
 

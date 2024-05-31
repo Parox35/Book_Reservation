@@ -178,7 +178,7 @@
                         if(mysqli_num_rows($books) > 0){
                             //Create a card for each book in the database
                             while ($book = mysqli_fetch_array($books)){
-                                echo '<div class="col p-3"><div class="card" style="width: 18rem;"><img src="'. $book["Image"] .'" class="card-img-top" ><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a>';
+                                echo '<div class="col p-3"><div class="card" style="width: 18rem; height:50rem;"><img src="'. $book["Image"] .'" class="card-img-top" style="max-height:25rem"><div class="card-body"><h5 class="card-title">'. $book["Title"] .'</h5><p class="card-text">'. $book["Description"] .'</p></div><ul class="list-group list-group-flush"><li class="list-group-item">Author: '. $book["Author"] .'</li><li class="list-group-item">Date of publication: '. $book["Publication_date"] .'</li><li class="list-group-item">Theme: '. $book["Theme"] .'</li></ul><div class="card-body"><a href="./reservate.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Reservate</a>';
                                 
                                 if($admin == 1){
                                     echo '<a href="./edit.php?Id='. $book["Id"] .'" class="card-link btn btn-secondary">Edit</a>';

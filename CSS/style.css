@@ -90,3 +90,15 @@ legend{
 .inputAdd{
     width: 40rem !important;
 }
+
+/*-----------------------------------
+|                                   |
+|           Profil page             |
+|                                   |
+-----------------------------------*/
+
+.tableDisplay{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -74,7 +74,7 @@
                     <label>Last Name: <?php echo "$lastName"; ?></label>
                 </div>
             </div>
-            <div>
+            <div class="mt-4 tableDisplay">
             <table class="table table-striped mt-3 col-sm-4">
                 <thead>
                     <tr>
